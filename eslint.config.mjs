@@ -14,6 +14,6 @@ export default tseslint.config(
     },
   },
   {
-    ignores: ["dist/**", "coverage/**", "node_modules/**", "run-app.js"],
+    ignores: ["dist/**", "coverage/**", "node_modules/**"],
   },
 );
