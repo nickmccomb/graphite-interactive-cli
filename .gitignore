@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+
+# Build output (rebuilt via pnpm build / prepublishOnly)
+dist/
+
+# Coverage / caches
+coverage/
+*.tsbuildinfo
+.vitest/
+
+# OS / editor
+.DS_Store
+
+# Env and local secrets
+.env
+.env.*
+!.env.example
+
+# Pack / publish artifacts
+*.tgz
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Optional local tooling
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Cursor / agent artifacts (keep machine-local)
+.cursor/
