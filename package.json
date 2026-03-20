@@ -1,6 +1,6 @@
 {
   "name": "graphite-interactive-cli",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Interactive menu for the Graphite CLI (gt) — stacks, PRs, and branching without memorizing commands",
   "type": "module",
   "bin": {
@@ -9,6 +9,7 @@
   "files": [
     "dist",
     "docs",
+    "completions",
     "README.md",
     "LICENSE",
     "CHANGELOG.md"
@@ -25,6 +26,7 @@
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
     "prepublishOnly": "npm run build"
   },

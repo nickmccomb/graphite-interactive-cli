@@ -39,7 +39,7 @@ Requires a working **`gt`** on your `PATH` (see above). **Node 20+** for this pa
 npm install -g graphite-interactive-cli
 ```
 
-Then run **`gtm`** (interactive menu in a TTY, or `gtm doctor` for an environment check). The name avoids clashing with GNU coreutils’ `gtr` (GNU `tr`) on many Macs.
+Then run **`gtm`** in a terminal (interactive menu in a TTY). For an environment check you can run **`gtm doctor`** from the shell anytime; in the menu, the same check is under **Start here → Environment check (doctor)**. The command name avoids clashing with GNU coreutils’ `gtr` (GNU `tr`) on many Macs.
 
 Most Node installs put global binaries on your PATH automatically. If `gtm` is not found, add the directory from `npm prefix -g` (plus `/bin` on Unix) to PATH, like other global npm tools.
 
@@ -53,6 +53,26 @@ Without a global install: `npx graphite-interactive-cli gtm`.
 | **`GTM_DEBUG=1`**                   | Forwards `gt --debug` on invocations.              |
 | **`GTR_SHOW_GT`** / **`GTR_DEBUG`** | Same as above (legacy names, still supported).     |
 
+## Shell completion (optional)
+
+After installing the package globally, completion scripts are under the package root, e.g.:
+
+```bash
+# npm -g root
+G=$(npm root -g)/graphite-interactive-cli
+
+# bash (~/.bashrc)
+source "$G/completions/gtm.bash"
+
+# zsh: completion file must be named _gtm on your fpath
+mkdir -p ~/.zsh/completions
+cp "$G/completions/gtm.zsh" ~/.zsh/completions/_gtm
+fpath=(~/.zsh/completions $fpath)
+autoload -Uz compinit && compinit
+```
+
+The bundled completions cover common first arguments (`doctor`, `raw`, `help`) and `-C` / `--cwd`; full passthrough for `raw …` is left to normal shell completion.
+
 ## Develop
 
 ```bash
@@ -60,6 +80,7 @@ pnpm install
 pnpm dev              # tsx src/cli.ts
 pnpm build && node dist/cli.mjs --help
 pnpm test
+pnpm test:coverage   # lcov + html under coverage/
 ```
 
 For AI/IDE agents working in this repo, see **[AGENTS.md](./AGENTS.md)**.

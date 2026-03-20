@@ -115,6 +115,11 @@ async function bootstrap(): Promise<void> {
     );
     console.log(`  ${pc.cyan(`${CLI_CMD} -- doctor`)}`);
     console.log(
+      pc.dim(
+        `     (same check as the menu: ${CLI_CMD} → Start here → Environment check)`,
+      ),
+    );
+    console.log(
       `  ${pc.cyan(`${CLI_CMD} -- <gt-args>`)}   e.g. ${CLI_CMD} -- submit --stack`,
     );
     process.exit(0);

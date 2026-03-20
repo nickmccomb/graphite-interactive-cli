@@ -6,26 +6,32 @@
 
 3. **Build:** `pnpm install && pnpm build` — verify `dist/cli.mjs` exists and runs (`node dist/cli.mjs --help`).
 
-4. **Registry auth:** Ensure you are logged in (`npm whoami`). If not: `npm login` (or `npm adduser`) with an account that has 2FA configured if your npm settings require it.
+4. **Registry auth**
+   - **Local:** `npm login` / `npm adduser` (with OTP if 2FA is on).
+   - **CI:** add a repository secret **`NPM_TOKEN`** (publish-enabled [granular token](https://docs.npmjs.com/about-access-tokens) or classic). The **Release** workflow (`.github/workflows/release.yml`) runs **`npm publish --provenance --access public`** on **`v*.*.*`** tag pushes.
+   - **Trusted publishing (optional):** Configure an [npm Trusted Publisher](https://docs.npmjs.com/trusted-publishers) for this GitHub repo to reduce reliance on long-lived tokens; you may still need `NPM_TOKEN` depending on npm/GitHub behavior.
 
-5. **Publish (local):**
+5. **Version & changelog**
+   - Bump **`package.json`** `version`.
+   - Update **`CHANGELOG.md`** with a dated section for that version.
+   - Commit, then tag: `git tag vX.Y.Z && git push origin main && git push origin vX.Y.Z` (or push the tag from the release commit).
 
-   ```bash
-   npm publish
-   ```
+6. **Automated publish (recommended)**
+   - Push a tag matching **`vMAJOR.MINOR.PATCH`** (must match `package.json`). **Release** workflow runs tests, builds, and publishes with **provenance**.
+   - Ensure **`NPM_TOKEN`** is set on the GitHub repo **Settings → Secrets and variables → Actions**.
 
-   For a **scoped** package name (e.g. `@scope/pkg`), use `npm publish --access public` the first time.
-
-   With [provenance](https://docs.npmjs.com/generating-provenance-statements) (recommended from CI with OIDC):
+7. **Publish (local fallback)**
 
    ```bash
    npm publish --provenance --access public
    ```
 
-6. **Smoke test after publish:** `npm install -g graphite-interactive-cli` then `gtm --help`; or `npx graphite-interactive-cli gtm --help`.
+   For a **scoped** package name (e.g. `@scope/pkg`), use `npm publish --access public` the first time.
+
+8. **Smoke test after publish:** `npm install -g graphite-interactive-cli` then `gtm --help`; or `npx graphite-interactive-cli gtm --help`.
 
    **Dry run / offline check:** `npm pack` then `npm install ./graphite-interactive-cli-0.1.0.tgz` in a temp folder and run `./node_modules/.bin/gtm --help`.
 
-7. **Optional:** Add [Changesets](https://github.com/changesets/changesets) later for changelog-driven semver; this repo documents manual release for v0.x.
+9. **Codecov (optional):** Add a **`CODECOV_TOKEN`** repo secret if you want [Codecov](https://codecov.io) reports from CI (CI still passes without it).
 
-8. **Trusted publishing:** Configure npm “Trusted Publisher” for your GitHub repo to avoid long-lived tokens.
+10. **Optional:** Add [Changesets](https://github.com/changesets/changesets) later for changelog-driven semver; this repo documents manual release for v0.x.

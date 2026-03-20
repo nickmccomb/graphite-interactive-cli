@@ -4,7 +4,14 @@ export default defineConfig({
   test: {
     coverage: {
       provider: "v8",
-      reporter: ["text", "html"],
+      reporter: ["text", "html", "lcov"],
+      exclude: [
+        "node_modules/**",
+        "dist/**",
+        "**/*.test.ts",
+        "eslint.config.mjs",
+        "completions/**",
+      ],
     },
   },
 });

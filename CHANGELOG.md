@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-03-21
+
+### Added
+
+- `src/root-menu.ts` — single source for root menu options (with tests).
+- Tests for `shouldTeachBack` / `shouldForwardGtDebug` (`GTM_*` / legacy `GTR_*`, `DEBUG`).
+- GitHub Dependabot (npm + Actions), issue templates, PR template, `CODEOWNERS`, `FUNDING.yml`.
+- CI: `test:coverage`, **Codecov** upload (optional `CODECOV_TOKEN`), **Release** workflow on `v*.*.*` tags (`npm publish --provenance`).
+- Optional **shell completions** in `completions/` (bash + zsh), shipped on npm.
+
+### Changed
+
+- Interactive: root menu order and copy tweaks; **Environment check** only under **Start here** (not top-level); removed “Help — what is Graphite?”; **Navigate** hints point to **My stack** for log / stack moves.
+- Non-TTY hint clarifies `gtm -- doctor` matches **Start here → Environment check**.
+
 ## [0.2.2] - 2026-03-20
 
 ### Removed

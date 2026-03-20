@@ -12,6 +12,8 @@ import { z } from "zod";
 import process from "node:process";
 import pc from "picocolors";
 import { CLI_CMD } from "./cli-invocation.js";
+import { runDoctor } from "./doctor.js";
+import { ROOT_MENU_OPTIONS } from "./root-menu.js";
 import {
   captureGitBranch,
   preflightGt,
@@ -59,14 +61,14 @@ async function interactiveStackHub(cwd: string): Promise<void> {
         message: "Choose an action",
         options: [
           {
-            value: "log",
-            label: "Show my stack (detailed)",
-            hint: "gt log",
-          },
-          {
             value: "logShort",
             label: "Show my stack (compact)",
             hint: "gt log short",
+          },
+          {
+            value: "log",
+            label: "Show my stack (detailed)",
+            hint: "gt log",
           },
           {
             value: "logLong",
@@ -74,9 +76,9 @@ async function interactiveStackHub(cwd: string): Promise<void> {
             hint: "gt log long",
           },
           {
-            value: "down",
-            label: "Move toward main (parent branch)",
-            hint: "gt down",
+            value: "checkout",
+            label: "Pick a branch to switch to…",
+            hint: "gt checkout",
           },
           {
             value: "up",
@@ -84,16 +86,16 @@ async function interactiveStackHub(cwd: string): Promise<void> {
             hint: "gt up",
           },
           {
+            value: "down",
+            label: "Move toward main (parent branch)",
+            hint: "gt down",
+          },
+          {
             value: "bottom",
             label: "Jump to bottom of stack",
             hint: "gt bottom",
           },
           { value: "top", label: "Jump to top of stack", hint: "gt top" },
-          {
-            value: "checkout",
-            label: "Pick a branch to switch to…",
-            hint: "gt checkout",
-          },
           { value: "upN", label: "Move up N steps…", hint: "gt up N" },
           { value: "downN", label: "Move down N steps…", hint: "gt down N" },
           { value: "parent", label: "Show parent branch", hint: "gt parent" },
@@ -200,25 +202,6 @@ async function interactiveStackHub(cwd: string): Promise<void> {
   }
 }
 
-function showHelpTopic(): void {
-  console.log(
-    [
-      pc.bold("\nWhat is Graphite?"),
-      "",
-      "Graphite helps you work with a stack of branches — each branch can become its own pull request, stacked on top of each other.",
-      "",
-      pc.bold("Terms:"),
-      "  • Trunk — the main branch you merge into (e.g. main).",
-      "  • Downstack — branches closer to trunk (ancestors).",
-      "  • Upstack — branches further from trunk (descendants).",
-      "",
-      pc.dim("Cheatsheet: https://graphite.dev/docs/cheatsheet"),
-      pc.dim("Full reference: https://graphite.dev/docs/command-reference"),
-      "",
-    ].join("\n"),
-  );
-}
-
 async function interactiveStartHere(cwd: string): Promise<void> {
   while (true) {
     const choice = handleCancel(
@@ -235,19 +218,24 @@ async function interactiveStartHere(cwd: string): Promise<void> {
             label: "Authenticate for PRs (gt auth)",
             hint: "token",
           },
+          {
+            value: "doctor",
+            label: "Environment check (doctor)",
+            hint: "Node, git, gt",
+          },
           { value: "checkout", label: "Switch branch", hint: "gt checkout" },
           { value: "dash", label: "Open Graphite dashboard", hint: "gt dash" },
+          {
+            value: "upgrade",
+            label: "Upgrade Graphite CLI",
+            hint: "gt upgrade",
+          },
           { value: "docs", label: "Open CLI docs", hint: "gt docs" },
           { value: "demo", label: "Interactive tutorial (gt demo)", hint: "" },
           {
             value: "guide",
             label: "Read workflow guide",
             hint: "gt guide workflow",
-          },
-          {
-            value: "upgrade",
-            label: "Upgrade Graphite CLI",
-            hint: "gt upgrade",
           },
           BACK,
           EXIT,
@@ -278,6 +266,10 @@ async function interactiveStartHere(cwd: string): Promise<void> {
       } else {
         await runGt(["auth"], { cwd, inheritStdio: true });
       }
+      continue;
+    }
+    if (choice === "doctor") {
+      runDoctor(cwd);
       continue;
     }
     if (choice === "checkout") {
@@ -328,6 +320,12 @@ async function interactiveViewInspect(cwd: string): Promise<void> {
       await select({
         message: "View & inspect",
         options: [
+          {
+            value: "logShort",
+            label: "Stack list (short)",
+            hint: "gt log short",
+          },
+          { value: "log", label: "Stack list (detailed)", hint: "gt log" },
           { value: "info", label: "Branch / PR info", hint: "gt info" },
           { value: "pr", label: "Open PR in browser", hint: "gt pr" },
           {
@@ -335,12 +333,6 @@ async function interactiveViewInspect(cwd: string): Promise<void> {
             label: "Open stack in browser",
             hint: "gt pr --stack",
           },
-          {
-            value: "logShort",
-            label: "Stack list (short)",
-            hint: "gt log short",
-          },
-          { value: "log", label: "Stack list (detailed)", hint: "gt log" },
           BACK,
           EXIT,
         ],
@@ -506,17 +498,17 @@ async function interactiveSyncSubmit(cwd: string): Promise<void> {
       await select({
         message: "Sync & submit",
         options: [
-          { value: "sync", label: "Sync trunk & restack (gt sync)", hint: "" },
-          {
-            value: "submit",
-            label: "Submit current stack (gt submit)",
-            hint: "",
-          },
           {
             value: "submitStack",
             label: "Submit full stack (gt submit --stack)",
             hint: "ss",
           },
+          {
+            value: "submit",
+            label: "Submit current branch (gt submit)",
+            hint: "",
+          },
+          { value: "sync", label: "Sync trunk & restack (gt sync)", hint: "" },
           BACK,
           EXIT,
         ],
@@ -599,13 +591,13 @@ async function interactiveNavigate(cwd: string): Promise<void> {
   while (true) {
     const choice = handleCancel(
       await select({
-        message: "Navigate",
+        message: "Navigate (quick jumps — use My stack for log & stack moves)",
         options: [
           { value: "checkout", label: "Checkout branch", hint: "gt checkout" },
           { value: "up", label: "Upstack one", hint: "gt up" },
           { value: "down", label: "Downstack one", hint: "gt down" },
-          { value: "top", label: "Top of stack", hint: "gt top" },
           { value: "bottom", label: "Bottom of stack", hint: "gt bottom" },
+          { value: "top", label: "Top of stack", hint: "gt top" },
           BACK,
           EXIT,
         ],
@@ -639,6 +631,17 @@ async function interactiveRestack(cwd: string): Promise<void> {
         options: [
           { value: "restack", label: "Restack stack", hint: "gt restack" },
           {
+            value: "undo",
+            label: "Undo last Graphite mutation",
+            hint: "gt undo",
+          },
+          {
+            value: "continue",
+            label: "Continue after conflict",
+            hint: "gt continue",
+          },
+          { value: "abort", label: "Abort conflict", hint: "gt abort" },
+          {
             value: "restackOnly",
             label: "Restack only this branch",
             hint: "--only",
@@ -648,17 +651,6 @@ async function interactiveRestack(cwd: string): Promise<void> {
             value: "restackDown",
             label: "Restack downstack",
             hint: "--downstack",
-          },
-          {
-            value: "continue",
-            label: "Continue after conflict",
-            hint: "gt continue",
-          },
-          { value: "abort", label: "Abort conflict", hint: "gt abort" },
-          {
-            value: "undo",
-            label: "Undo last Graphite mutation",
-            hint: "gt undo",
           },
           BACK,
           EXIT,
@@ -717,13 +709,13 @@ async function interactiveReorder(cwd: string): Promise<void> {
             label: "Reorder branches (editor)",
             hint: "gt reorder",
           },
-          { value: "fold", label: "Fold into parent", hint: "gt fold" },
-          { value: "pop", label: "Pop branch (keep changes)", hint: "gt pop" },
           {
             value: "squash",
             label: "Squash commits on branch",
             hint: "gt squash",
           },
+          { value: "fold", label: "Fold into parent", hint: "gt fold" },
+          { value: "pop", label: "Pop branch (keep changes)", hint: "gt pop" },
           {
             value: "absorb",
             label: "Absorb staged into downstack commits",
@@ -1031,79 +1023,7 @@ export async function runInteractiveMenu(
     const top = handleCancel(
       await select({
         message: "What do you want to do?",
-        options: [
-          {
-            value: "stack",
-            label: "My stack — view & move",
-            hint: "log, navigate up/down, checkout",
-          },
-          {
-            value: "start",
-            label: "Start here",
-            hint: "init, auth, demo, docs",
-          },
-          {
-            value: "view",
-            label: "View & inspect",
-            hint: "info, PR links, log",
-          },
-          {
-            value: "create",
-            label: "Create & commit",
-            hint: "create, modify",
-          },
-          {
-            value: "sync",
-            label: "Sync & submit",
-            hint: "sync, submit",
-          },
-          {
-            value: "nav",
-            label: "Navigate",
-            hint: "checkout, up, down",
-          },
-          {
-            value: "restack",
-            label: "Restack & recovery",
-            hint: "restack, continue, undo",
-          },
-          {
-            value: "reorder",
-            label: "Reorder & edit stack",
-            hint: "move, split, squash",
-          },
-          {
-            value: "lifecycle",
-            label: "Branch tracking & cleanup",
-            hint: "track, delete, rename",
-          },
-          {
-            value: "collab",
-            label: "Collaborate",
-            hint: "get, freeze",
-          },
-          {
-            value: "merge",
-            label: "Merge stack PRs",
-            hint: "gt merge",
-          },
-          {
-            value: "help",
-            label: "Help — what is Graphite?",
-            hint: "",
-          },
-          {
-            value: "doctor",
-            label: "Environment check (doctor)",
-            hint: "Node, git, gt",
-          },
-          {
-            value: "raw",
-            label: "Run raw gt arguments…",
-            hint: "advanced",
-          },
-          EXIT,
-        ],
+        options: [...ROOT_MENU_OPTIONS, EXIT],
       }),
     );
 
@@ -1123,11 +1043,6 @@ export async function runInteractiveMenu(
     else if (top === "lifecycle") await interactiveBranchLifecycle(cwd);
     else if (top === "collab") await interactiveCollaborate(cwd);
     else if (top === "merge") await interactiveMerge(cwd);
-    else if (top === "help") {
-      showHelpTopic();
-    } else if (top === "doctor") {
-      const { runDoctor } = await import("./doctor.js");
-      runDoctor(cwd);
-    } else if (top === "raw") await interactiveRaw(cwd);
+    else if (top === "raw") await interactiveRaw(cwd);
   }
 }

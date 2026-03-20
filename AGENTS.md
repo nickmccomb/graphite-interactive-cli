@@ -14,7 +14,9 @@
 ## Code map
 
 - **Entry:** `src/cli.ts` — argv, `gtm doctor`, `gtm raw`, `--` passthrough, TTY check → menu.
+- **Root menu list:** `src/root-menu.ts` — ordered `select` options for the main screen.
 - **Menu:** `src/interactive.ts` — `@clack/prompts` UI calling `runGt`.
+- **Completions:** `completions/gtm.bash`, `completions/gtm.zsh` — optional; shipped in npm package `files`.
 - **Subprocess / env:** `src/run-gt.ts` — `GTM_SHOW_GT` / `GTM_DEBUG` (legacy: `GTR_*`), `GRAPHITE_CLI` / `GT_BINARY`, binary resolution.
 - **Doctor:** `src/doctor.ts`
 
