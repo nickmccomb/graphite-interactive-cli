@@ -52,18 +52,25 @@ export interface RunGtOptions {
   cwd: string;
   /** When true, child inherits stdin/stdout/stderr (TTY-safe for interactive gt). */
   inheritStdio: boolean;
-  /** Print equivalent shell line when GTR_SHOW_GT=1 */
+  /** Print equivalent shell line when GTM_SHOW_GT or GTR_SHOW_GT=1 */
   teachBack?: boolean;
 }
 
+function envTruthy(name: string): boolean {
+  const v = process.env[name];
+  return v === "1" || v === "true";
+}
+
 export function shouldTeachBack(): boolean {
-  return process.env.GTR_SHOW_GT === "1" || process.env.GTR_SHOW_GT === "true";
+  return (
+    envTruthy("GTM_SHOW_GT") || envTruthy("GTR_SHOW_GT") // legacy alias
+  );
 }
 
 export function shouldForwardGtDebug(): boolean {
   return (
-    process.env.GTR_DEBUG === "1" ||
-    process.env.GTR_DEBUG === "true" ||
+    envTruthy("GTM_DEBUG") ||
+    envTruthy("GTR_DEBUG") || // legacy alias
     process.env.DEBUG?.includes("gtm") === true
   );
 }

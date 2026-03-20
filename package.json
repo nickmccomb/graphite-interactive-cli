@@ -1,6 +1,6 @@
 {
   "name": "graphite-interactive-cli",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Interactive menu for the Graphite CLI (gt) — stacks, PRs, and branching without memorizing commands",
   "type": "module",
   "bin": {

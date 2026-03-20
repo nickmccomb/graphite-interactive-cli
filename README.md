@@ -1,4 +1,4 @@
-# GTR (Graphite interactive CLI)
+# Graphite interactive CLI (`gtm`)
 
 [![npm version](https://img.shields.io/npm/v/graphite-interactive-cli.svg)](https://www.npmjs.com/package/graphite-interactive-cli)
 [![CI](https://github.com/nickmccomb/graphite-interactive-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/nickmccomb/graphite-interactive-cli/actions/workflows/ci.yml)
@@ -11,7 +11,7 @@ Unofficial interactive menu for the official [Graphite](https://graphite.dev/) *
 
 Authoritative **`gt`** behavior, install methods, GitHub auth, and troubleshooting live in **Graphite’s docs**. This repo maintains a curated link list:
 
-- **[docs/graphite-resources.md](./docs/graphite-resources.md)** — install (`brew` / npm), requirements (Git ≥ 2.38), quick start, command reference, cheatsheet, LLM-oriented `llms.txt` / `FULL_DOC_BUNDLE` pointers.
+- **[docs/graphite-resources.md](./docs/graphite-resources.md)** — install (`brew` / npm), requirements (Git ≥ 2.38), quick start, command reference, cheatsheet, LLM-oriented `llms.txt` / `llms-full.txt` pointers.
 
 Highlights from their [install guide](https://graphite.dev/docs/install-the-cli):
 
@@ -44,6 +44,14 @@ Then run **`gtm`** (interactive menu in a TTY, or `gtm doctor` for an environmen
 Most Node installs put global binaries on your PATH automatically. If `gtm` is not found, add the directory from `npm prefix -g` (plus `/bin` on Unix) to PATH, like other global npm tools.
 
 Without a global install: `npx graphite-interactive-cli gtm`.
+
+### Environment variables
+
+| Variable                            | Effect                                             |
+| ----------------------------------- | -------------------------------------------------- |
+| **`GTM_SHOW_GT=1`**                 | Print an “equivalent `gt …`” line before each run. |
+| **`GTM_DEBUG=1`**                   | Forwards `gt --debug` on invocations.              |
+| **`GTR_SHOW_GT`** / **`GTR_DEBUG`** | Same as above (legacy names, still supported).     |
 
 ## Develop
 

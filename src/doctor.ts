@@ -41,7 +41,7 @@ export function runDoctor(cwd: string): void {
     pc.dim("  • First stack: https://graphite.dev/docs/cli-quick-start"),
   );
   lines.push(
-    pc.dim("  • In a repo: gt init (or use the GTR menu → Start here)"),
+    pc.dim(`  • In a repo: gt init (or open ${CLI_CMD} → Start here)`),
   );
   lines.push(
     pc.dim(

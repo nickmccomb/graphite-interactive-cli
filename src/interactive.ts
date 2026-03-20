@@ -11,6 +11,7 @@ import {
 import { z } from "zod";
 import process from "node:process";
 import pc from "picocolors";
+import { CLI_CMD } from "./cli-invocation.js";
 import {
   captureGitBranch,
   preflightGt,
@@ -1023,7 +1024,7 @@ export async function runInteractiveMenu(
   preflightGt(cwd, resolveGtBinary());
 
   while (true) {
-    intro(pc.bold("GTR — interactive Graphite"));
+    intro(pc.bold(`${CLI_CMD} — interactive Graphite`));
     const branch = captureGitBranch(cwd);
     if (branch) console.log(pc.dim(`On branch ${pc.cyan(branch)}\n`));
 

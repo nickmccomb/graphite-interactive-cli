@@ -15,7 +15,7 @@
 
 - **Entry:** `src/cli.ts` — argv, `gtm doctor`, `gtm raw`, `--` passthrough, TTY check → menu.
 - **Menu:** `src/interactive.ts` — `@clack/prompts` UI calling `runGt`.
-- **Subprocess / env:** `src/run-gt.ts` — `GTR_SHOW_GT`, `GTR_DEBUG`, binary resolution.
+- **Subprocess / env:** `src/run-gt.ts` — `GTM_SHOW_GT` / `GTM_DEBUG` (legacy: `GTR_*`), `GRAPHITE_CLI` / `GT_BINARY`, binary resolution.
 - **Doctor:** `src/doctor.ts`
 
 ## Dev commands
