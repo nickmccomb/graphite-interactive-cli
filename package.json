@@ -58,7 +58,7 @@
     "is-interactive": "^2.0.0",
     "picocolors": "^1.1.1",
     "read-package-up": "^11.0.0",
-    "zod": "^3.24.2"
+    "zod": "^4.4.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
